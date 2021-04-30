@@ -15,7 +15,26 @@
 		color: white;
 		background-color: #202020;
 		font-family: 'Consolas', 'Cutive Mono', monospace;
-		font-size: large;
+		font-size: small;
+	}
+
+	/* Responsive text */
+	@media (min-width: 992px) {
+		body {
+			font-size: medium;
+		}
+	}
+
+	@media (min-width: 1200px) {
+		body {
+			font-size: large;
+		}
+	}
+
+	.my-container {
+		width: 100%;
+		height: 100vh;
+		margin: 0px;
 	}
 
 	#nes {
@@ -28,8 +47,7 @@
 
 	.canvas-wrap {
 		position: relative;
-		margin-top: auto;
-		margin-bottom: auto;
+		margin: auto 0 auto 0;
 		height: 90%;
 	}
 
@@ -43,20 +61,49 @@
 		background-color: black;
 	}
 
-	#rom-select {
-		display: block;
-		margin-bottom: 1em;
-	}
-
-	.my-container {
-		width: 100%;
-		height: 100vh;
-		margin: 0px;
-	}
-
-	.side-panel {
-		margin-top: 5vh;
+	#info-panel {
+		margin: 5vh 0px 5vh 0px;
 		max-width: 30%;
+		min-width: min-content;
+		max-height: 90vh;
+		overflow-y: auto;
+	}
+
+	@media (max-aspect-ratio: 13/10) {
+		#info-panel {
+			display: none;
+		}
+
+		.canvas-wrap {
+			width: 100vw;
+			height: 93.75vw;
+		}
+
+		@media (min-aspect-ratio: 256/240) {
+			.canvas-wrap {
+				height: 100vh;
+				width: 106.666vh;
+			}
+		}
+	}
+
+	#info-panel::-webkit-scrollbar {
+		width: 20px;
+	}
+
+	#info-panel::-webkit-scrollbar-track {
+		background-color: transparent;
+	}
+
+	#info-panel::-webkit-scrollbar-thumb {
+		background-color: white;
+		border-radius: 20px;
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+
+	#info-panel::-webkit-scrollbar-thumb:hover {
+		background-color: white;
 	}
 
 	a {
@@ -73,13 +120,12 @@
 	h3 {
 		color: rgb(78, 201, 176);
 	}
-
 	</style>
 </head>
 
 <body>
 	<div class="my-container d-flex justify-content-evenly">
-	<div class="side-panel">
+	<div id="info-panel">
 		<h3>About</h3>
 		<p>
 		This is a demo of my Nes Emulator written from scratch in C. The demo is compiled to <a
@@ -114,9 +160,6 @@ Q     - Select</p>
 		<canvas id="nes" width="256" height="240"></canvas>
 		<div id="overlay"></div>
 	</div>
-
-		<button onclick="printTime()" style="display: none;">Print time</button>
-		<button onclick="resetTime()" style="display: none;">Reset</button>
 	</div>
 	<script>
 		const nesWorker = new Worker("nes.js"); 
@@ -136,7 +179,7 @@ Q     - Select</p>
 		const ctx = canvas.getContext("2d");
 		let audioContext;
 
-		nesWorker.onmessage = function (e) {
+		nesWorker.onmessage = (e) => {
 			switch (e.data.type) {
 			case MESSAGE_TYPE.SEND_PIXELS:
 				ctx.putImageData(e.data.pixels, 0, 0);
@@ -156,20 +199,20 @@ Q     - Select</p>
 			}
 		};
 
-		window.addEventListener("keyup", function (event) {
-			if (event.key in KEY_MAP) {
-				nesWorker.postMessage({ type: MESSAGE_TYPE.KEY_UP, key: KEY_MAP[event.key] });
+		window.addEventListener("keyup", (e) => {
+			if (e.key in KEY_MAP) {
+				nesWorker.postMessage({ type: MESSAGE_TYPE.KEY_UP, key: KEY_MAP[e.key] });
 			}
 		});
 
-		window.addEventListener("keydown", function (event) {
-			if (event.key in KEY_MAP) {
-				nesWorker.postMessage({type: MESSAGE_TYPE.KEY_DOWN, key: KEY_MAP[event.key]});
+		window.addEventListener("keydown", (e) => {
+			if (e.key in KEY_MAP) {
+				nesWorker.postMessage({type: MESSAGE_TYPE.KEY_DOWN, key: KEY_MAP[e.key]});
 			}
 		});
 
 		let firstClick = true;
-		window.onclick = function() {
+		window.onclick = () => {
 			if (firstClick) {
 				audioContext = new AudioContext();
 				firstClick = false;
@@ -179,14 +222,6 @@ Q     - Select</p>
 		function changeRom() {
 			let select = document.getElementById("rom-select");
 			nesWorker.postMessage({type: MESSAGE_TYPE.LOAD_ROM, rom: select.value});
-		}
-
-		function printTime() {
-			nesWorker.postMessage({type: MESSAGE_TYPE.PRINT_TIME});
-		}
-
-		function resetTime() {
-			nesWorker.postMessage({type: MESSAGE_TYPE.RESET_TIME});
 		}
 
 	</script>
