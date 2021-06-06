@@ -2,10 +2,14 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="message.js"></script>
+
 	<!-- Latest compiled and minified CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
 	integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+	<!-- Emulator -->
+	<script src="emu.js"></script>
+	<script src="nes.js" defer></script>
 
 	<!-- Nice font -->
 	<link rel="preconnect" href="https://fonts.gstatic.com">
@@ -157,7 +161,7 @@
 			</tbody>
 		</table>
 		<h3>Choose a game</h3>
-		<select name="rom" id="rom-select" class="form-select" style="width: fit-content;" onchange="changeRom()">
+		<select name="rom" id="rom-select" class="form-select" style="width: fit-content;">
 		<option value="package/blockoban.nes">Blockoban</option>
 		<option value="package/Yoshi.nes">Yoshi</option>
 		<option value="package/Dr.Mario.nes">Dr. Mario</option>
@@ -166,76 +170,16 @@
 		<option value="package/SuperMarioBros.nes">Super Mario Bros</option>
 		<option value="package/alter_ego.nes">Alter Ego</option>
 		</select>
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="audio" checked>
+			<label class="form-check-label" for="audio">Mute Audio</label>
+		</div>
 	</div>
 	<div class="canvas-wrap">
 		<canvas id="nes" width="256" height="240"></canvas>
 		<div id="overlay"></div>
 	</div>
 	</div>
-	<script>
-		const nesWorker = new Worker("nes.js"); 
-
-		const KEY_MAP = Object.freeze({
-			"x": 0, "X": 0,
-			"z": 1, "Z": 1,
-			"q": 2, "Q": 2,
-			"Enter": 3,
-			"ArrowUp": 4,
-			"ArrowDown": 5,
-			"ArrowLeft": 6,
-			"ArrowRight": 7
-		});
-
-		const canvas = document.getElementById("nes");
-		const ctx = canvas.getContext("2d");
-		let audioContext;
-
-		nesWorker.onmessage = (e) => {
-			switch (e.data.type) {
-			case MESSAGE_TYPE.SEND_PIXELS:
-				ctx.putImageData(e.data.pixels, 0, 0);
-				break;
-			case MESSAGE_TYPE.SEND_AUDIO:
-				// Disable audio for now, getting gapless PCM playback is a pain in ass with the web audio api
-				if (audioContext !== undefined && false) { 
-					let audioBuffer = audioContext.createBuffer(1, e.data.audio.length, 44100);
-					audioBuffer.copyToChannel(e.data.audio, 0);
-
-					let audioBufferSourceNode = audioContext.createBufferSource();
-					audioBufferSourceNode.buffer = audioBuffer;
-					audioBufferSourceNode.connect(audioContext.destination);
-					audioBufferSourceNode.start();
-				}
-				break;
-			}
-		};
-
-		window.addEventListener("keyup", (e) => {
-			if (e.key in KEY_MAP) {
-				nesWorker.postMessage({ type: MESSAGE_TYPE.KEY_UP, key: KEY_MAP[e.key] });
-			}
-		});
-
-		window.addEventListener("keydown", (e) => {
-			if (e.key in KEY_MAP) {
-				nesWorker.postMessage({type: MESSAGE_TYPE.KEY_DOWN, key: KEY_MAP[e.key]});
-			}
-		});
-
-		let firstClick = true;
-		window.onclick = () => {
-			if (firstClick) {
-				audioContext = new AudioContext();
-				firstClick = false;
-			}
-		}
-
-		function changeRom() {
-			let select = document.getElementById("rom-select");
-			nesWorker.postMessage({type: MESSAGE_TYPE.LOAD_ROM, rom: select.value});
-		}
-
-	</script>
 </body>
 
 </html>
