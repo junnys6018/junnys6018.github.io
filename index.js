@@ -29,7 +29,6 @@ const maps = Object.freeze({
     },
 });
 
-let update;
 function RAFCallback(timestamp) {
     requestAnimationFrame(RAFCallback);
     const canvasElement = document.getElementById('voxel-canvas');
@@ -38,14 +37,7 @@ function RAFCallback(timestamp) {
     const width = canvasElement.width;
     const height = canvasElement.height;
 
-    const t0 = performance.now();
     const image = voxel.render(voxelContext, width, height, timestamp / 20000);
-    const t1 = performance.now();
-
-    if (!update || timestamp > update) {
-        document.getElementById('fps').innerText = (t1 - t0).toFixed(2);
-        update = timestamp + 1000;
-    }
 
     const imageView = new Uint8ClampedArray(Module.HEAPU8.buffer, image, width * height * 4);
     const imageData = new ImageData(imageView, width, height);

@@ -2,6 +2,7 @@
     font-family: "Roboto", sans-serif;
     font-size: 16px;
     --secondary-text: rgb(189, 189, 189);
+    --map-offset: 0.5rem;
     background-color: #202020;
 }
 
@@ -17,10 +18,7 @@ body {
     width: 100vw;
     height: 100vh;
     display: block;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
 }
 
 body::-webkit-scrollbar {
@@ -43,6 +41,9 @@ body::-webkit-scrollbar-thumb {
 @media screen and (max-width: 768px) {
     #headshot {
         width: 70%;
+    }
+    :root {
+        --map-offset: 0px;
     }
 }
 
@@ -81,7 +82,7 @@ body::-webkit-scrollbar-thumb {
 .map {
     position: absolute;
     top: 0.1rem;
-    right: calc(10px + 1rem);
+    right: calc(10px + var(--map-offset));
     width: 3rem;
     height: 3rem;
 }
@@ -89,11 +90,11 @@ body::-webkit-scrollbar-thumb {
 .map svg {
     width: 100%;
     height: 100%;
-    fill: rgb(172, 172, 172);
+    fill: lightgray;
 }
 
 .map:hover svg {
-    fill: lightgray;
+    fill: rgb(253, 253, 253);
     cursor: pointer;
 }
 
@@ -103,7 +104,7 @@ body::-webkit-scrollbar-thumb {
     column-gap: 0.6rem;
     row-gap: 0.3rem;
 
-    margin: 0 1rem 0 0;
+    margin: 0 var(--map-offset) 0 0;
     padding: 0.5rem;
     width: fit-content;
 
@@ -136,6 +137,20 @@ body::-webkit-scrollbar-thumb {
 
 #map-selector .map-text {
     text-align: center;
+}
+
+.resume-download {
+    color: var(--secondary-text);
+    text-decoration: underline;
+    text-align: center;
+    font-size: 24px;
+}
+
+.resume-download:hover {
+    color: white;
+    text-decoration: underline;
+    text-align: center;
+    font-size: 24px;
 }
 
 .primary-grey {
@@ -183,7 +198,8 @@ section {
     grid-template-columns: repeat(auto-fit, 20rem);
 }
 
-.projects a, img {
+.projects a,
+.projects img {
     width: 100%;
     height: 20rem;
 }
@@ -223,9 +239,30 @@ section {
 .projects div span {
     font-size: 32px;
     font-weight: 500;
+    text-shadow: 2px 2px 3px #000000af;
     margin: auto;
 }
 
 .projects div:hover {
     opacity: 0;
+}
+
+.contacts {
+    margin-top: 3rem;
+    font-size: 24px;
+}
+
+.contacts > * {
+    text-align: center;
+    color: var(--secondary-text);
+    fill: var(--secondary-text);
+}
+
+.contacts span {
+    text-decoration: underline;
+}
+
+.contacts > *:hover {
+    color: white;
+    fill: white;
 }
