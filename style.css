@@ -144,6 +144,8 @@ body::-webkit-scrollbar-thumb {
     text-decoration: underline;
     text-align: center;
     font-size: 24px;
+    margin: 0 auto;
+    width: fit-content;
 }
 
 .resume-download:hover {
