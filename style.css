@@ -79,7 +79,7 @@ body::-webkit-scrollbar-thumb {
     margin: 0 2rem;
 }
 
-.map {
+.map-dropdown {
     position: absolute;
     top: 0.1rem;
     right: calc(10px + var(--map-offset));
@@ -87,55 +87,62 @@ body::-webkit-scrollbar-thumb {
     height: 3rem;
 }
 
-.map svg {
+.map-dropdown svg {
     width: 100%;
     height: 100%;
     fill: lightgray;
 }
 
-.map:hover svg {
+.map-dropdown svg:hover {
     fill: rgb(253, 253, 253);
     cursor: pointer;
 }
 
-#map-selector {
-    display: none;
+#map-dropdown-content {
+    display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 0.6rem;
     row-gap: 0.3rem;
 
-    margin: 0 var(--map-offset) 0 0;
     padding: 0.5rem;
     width: fit-content;
 
-    position: absolute;
-    top: 3.2rem;
-    right: 10px;
+    position: relative;
+    transform: translateX(-70%);
 
     background-color: #202020;
+    box-shadow: rgba(20, 20, 20, 0.4) 0 0 1rem;
     border-radius: 0.3rem;
-    z-index: 1;
     user-select: none;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-out;
 }
 
-#map-selector img {
+.map-dropdown:focus-within #map-dropdown-content {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+#map-dropdown-content img {
     width: 4rem;
     height: 4rem;
     display: block;
 }
 
-#map-selector img:hover {
+#map-dropdown-content img:hover {
     mix-blend-mode: overlay;
     cursor: pointer;
 }
 
-#map-selector .map-overlay {
+#map-dropdown-content .map-overlay {
     width: min-content;
     margin: 0 auto;
     background-color: #ffffffbb;
 }
 
-#map-selector .map-text {
+#map-dropdown-content .map-text {
     text-align: center;
 }
 
@@ -200,19 +207,24 @@ section {
     grid-template-columns: repeat(auto-fit, 20rem);
 }
 
-.projects a,
-.projects img {
+.project-item {
+    display: block;
+    position: relative;
+    color: white;
     width: 100%;
     height: 20rem;
 }
 
-.projects > a {
-    display: block;
-    position: relative;
+.project-item img {
+    width: 100%;
+    height: 100%;
+}
+
+.project-item:hover {
     color: white;
 }
 
-.projects > a::before {
+.project-item::before {
     content: "";
     position: absolute;
     top: 0;
@@ -223,11 +235,11 @@ section {
     transition: background-color 0.5s ease;
 }
 
-.projects > a:hover::before {
+.project-item:hover::before {
     background-color: transparent;
 }
 
-.projects div {
+.project-text {
     position: absolute;
     top: 0;
     left: 0;
@@ -238,33 +250,33 @@ section {
     transition: opacity 0.5s ease;
 }
 
-.projects div span {
+.project-text > * {
     font-size: 32px;
     font-weight: 500;
     text-shadow: 2px 2px 3px #000000af;
     margin: auto;
 }
 
-.projects div:hover {
+.project-text:hover {
     opacity: 0;
 }
 
 .contacts {
     margin-top: 3rem;
-    font-size: 24px;
+    font-size: 20px;
 }
 
-.contacts > * {
+.contact-name {
+    text-decoration: underline;
+}
+
+.contact-item {
     text-align: center;
     color: var(--secondary-text);
     fill: var(--secondary-text);
 }
 
-.contacts span {
-    text-decoration: underline;
-}
-
-.contacts > *:hover {
+.contact-item:hover {
     color: white;
     fill: white;
 }
