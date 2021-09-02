@@ -70,8 +70,8 @@ window.addEventListener('load', _ => {
 function setCanvasSize() {
     const canvasElement = document.getElementById('voxel-canvas');
 
-    const aspect = window.innerHeight / window.innerWidth;
-    canvasElement.width = window.innerWidth < 700 ? window.innerWidth : 700;
+    const aspect = canvasElement.clientHeight / canvasElement.clientWidth;
+    canvasElement.width = canvasElement.clientWidth < 700 ? canvasElement.clientWidth : 700;
     canvasElement.height = canvasElement.width * aspect;
 }
 
