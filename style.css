@@ -271,6 +271,7 @@ section {
 }
 
 .contact-item {
+    width: max-content;
     text-align: center;
     color: var(--secondary-text);
     fill: var(--secondary-text);
