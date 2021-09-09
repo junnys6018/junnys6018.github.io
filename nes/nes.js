@@ -27,12 +27,14 @@ audioContext.suspend();
 // Input 
 window.addEventListener("keyup", (e) => {
 	if (e.key in KEY_MAP) {
+		e.preventDefault();
 		keys[KEY_MAP[e.key]] = 0;
 	}
 });
 
 window.addEventListener("keydown", (e) => {
 	if (e.key in KEY_MAP) {
+		e.preventDefault();
 		keys[KEY_MAP[e.key]] = 1;
 	}
 });
