@@ -15,6 +15,9 @@ const KEY_MAP = Object.freeze({
 	"ArrowRight": 7
 });
 
+// Assumes the standard gamepad mapping: https://w3c.github.io/gamepad/#remapping
+const GAMEPAD_MAP = [0, 1, 8, 9, 12, 13, 14, 15];
+
 let api;
 let keys = new Uint8Array(8);
 keys.fill(0);
@@ -23,6 +26,23 @@ const canvasContext = canvas.getContext("2d");
 const audioContext = new AudioContext();
 let startTime = audioContext.currentTime;
 audioContext.suspend();
+
+// Gamepad
+let gamepad = null;
+
+window.addEventListener("gamepadconnected", (e) => {
+	if (gamepad === null) {
+		console.log(`connected gamepad ${e.gamepad.id}`);
+		gamepad = e.gamepad;
+	}
+});
+
+window.addEventListener("gamepaddisconnected", (e) => {
+	if (e.gamepad.index === gamepad.index) {
+		console.log("disconnected gamepad");
+		gamepad = null;
+	}
+});
 
 // Input 
 window.addEventListener("keyup", (e) => {
@@ -56,6 +76,12 @@ document.getElementById("audio").onchange = (e) => {
 let lastTimestamp;
 function RAFCallback(timestamp) {
 	requestAnimationFrame(RAFCallback);
+	if (gamepad !== null) {
+		gamepad = navigator.getGamepads()[gamepad.index];
+		for (let i = 0; i < 8; i++) {
+			keys[i] = gamepad.buttons[GAMEPAD_MAP[i]].pressed;
+		}
+	}
 	api.SetKeys(keys);
 
 	const deltaTime = (timestamp - (lastTimestamp || timestamp));
@@ -82,7 +108,7 @@ function EmulateUntil(cycle) {
 				const samples = new Float32Array(Module.HEAPF32.buffer, audioBufPtr, numSamples);
 				const audioBuffer = audioContext.createBuffer(1, samples.length, 44100);
 				audioBuffer.copyToChannel(samples, 0);
-				
+
 				const audioBufferSourceNode = audioContext.createBufferSource();
 				audioBufferSourceNode.buffer = audioBuffer;
 				audioBufferSourceNode.connect(audioContext.destination);
