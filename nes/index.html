@@ -16,6 +16,10 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
 	<style>
+		:root {
+			--highlight-color: rgb(78, 201, 176)
+		}
+
 		body {
 			margin: 0px;
 			color: white;
@@ -25,17 +29,15 @@
 
 		a {
 			color: white;
-			text-decoration: none;
-			font-weight: bold;
 		}
-
+		
 		a:hover {
+			color: var(--highlight-color);
 			text-decoration: underline;
-			color: white;
 		}
 
 		h3 {
-			color: rgb(78, 201, 176);
+			color: var(--highlight-color);
 			font-size: 18pt;
 		}
 
